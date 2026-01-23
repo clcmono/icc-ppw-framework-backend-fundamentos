@@ -25,13 +25,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void save(CategoryCreateDto createDto) {
+    public CategoryResponseDto save(CategoryCreateDto createDto) {
 
-        var categoryEntity = new CategoryEntity();
+      var categoryEntity = new CategoryEntity();
         categoryEntity.setName(createDto.name);
         categoryEntity.setDescription(createDto.description);
-        categoryRepository.save(categoryEntity);
 
+        var saved = categoryRepository.save(categoryEntity);
+
+        return CategoryMapper.toResponseDto(saved);
     }
 
 }
