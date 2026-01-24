@@ -7,6 +7,9 @@
 💻 **GitHub:** [Claudia Quevedo](https://github.com/clcmono/icc-ppw-framework-backend-fundamentos.git)
 
 
+
+### **PRACTICA 10: Spring Boot – Paginación de Datos con Spring Data JPA: Optimización y User Experience**
+
 ## **9. Resultados y Evidencias Requeridas**
 
 Se verificó que la base de datos se pobló correctamente con los datos de prueba, todas las funcionalidades de paginación, filtros y ordenamiento respondieron como se esperaba, y no se encontraron errores durante las pruebas.
@@ -19,7 +22,7 @@ Crear un script de carga masiva para poblar la base de datos con datos variados:
 - Precios variados ($10 - $5000)
 - Nombres con texto buscable
 
-### **9.2. Evidencias de funcionamiento** Caputuras de Postman
+### **9.2. Evidencias de funcionamiento** Capturas de Postman
 1. **Page response**: `GET /api/products?page=0&size=5` mostrando metadatos completos
 ![pageResponse](src/assets/pageresponse.png)
 
@@ -64,3 +67,15 @@ Crear un script de carga masiva para poblar la base de datos con datos variados:
 5. Ordenamiento por diferentes campos
 ![slice5price](src/assets/slice5.png)
 ![slice5name](src/assets/slice6.png)
+
+
+
+
+### **PRACTICA 11: Spring Boot – Autenticación y Autorización con JWT: Seguridad y Control de Acceso**
+
+1. User No Autorizado
+![userNoAutorizado](src/assets/1.png)
+4. Register
+![register](src/assets/2.png)
+5. Login
+![login](src/assets/3.png)
