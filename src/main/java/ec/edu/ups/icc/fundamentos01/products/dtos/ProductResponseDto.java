@@ -23,20 +23,17 @@ public class ProductResponseDto {
     public Double price;
     public String description;
 
-    // ============== OBJETOS ANIDADOS ==============
+  
 
     public UserSummaryDto user;
 
-    // public CategoryResponseDto category;
-    // ============== CATEGORÍAS (N:N) - Lista de objetos ==============
     public List<CategoryResponseDto> categories;
 
-    // ============== AUDITORÍA ==============
 
     public LocalDateTime createdAt;
     public LocalDateTime updatedAt;
 
-    // ============== DTOs INTERNOS ==============
+ 
 
     public static class UserSummaryDto {
         public Long id;

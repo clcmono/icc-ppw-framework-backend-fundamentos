@@ -24,10 +24,19 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll().stream().map(CategoryMapper::toResponseDto).toList();
     }
 
+    // @Override
+    // public void save(CategoryCreateDto createDto) {
+
+    //     var categoryEntity = new CategoryEntity();
+    //     categoryEntity.setName(createDto.name);
+    //     categoryEntity.setDescription(createDto.description);
+    //     categoryRepository.save(categoryEntity);
+    // }
+
     @Override
     public CategoryResponseDto save(CategoryCreateDto createDto) {
 
-      var categoryEntity = new CategoryEntity();
+        var categoryEntity = new CategoryEntity();
         categoryEntity.setName(createDto.name);
         categoryEntity.setDescription(createDto.description);
 
@@ -35,5 +44,4 @@ public class CategoryServiceImpl implements CategoryService {
 
         return CategoryMapper.toResponseDto(saved);
     }
-
 }

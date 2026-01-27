@@ -7,9 +7,13 @@ import org.springframework.data.domain.Slice;
 
 import ec.edu.ups.icc.fundamentos01.products.dtos.CreateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
+import ec.edu.ups.icc.fundamentos01.security.services.UserDetailsImpl;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 
+
 public interface ProductService {
+
+
 
     ProductResponseDto create(CreateProductDto dto);
 
@@ -21,9 +25,17 @@ public interface ProductService {
 
     List<ProductResponseDto> findByCategoryId(Long id);
 
+
     ProductResponseDto update(Long id, UpdateProductDto dto);
 
     void delete(Long id);
+
+    
+    ProductResponseDto update(Long id, UpdateProductDto dto, UserDetailsImpl currentUser);
+
+    void delete(Long id, UserDetailsImpl currentUser);
+
+
 
     Page<ProductResponseDto> findAllPaginado(int page, int size, String[] sort);
 

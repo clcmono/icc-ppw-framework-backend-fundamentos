@@ -1,0 +1,146 @@
+package ec.edu.ups.icc.fundamentos01.shared.exception;
+
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import ec.edu.ups.icc.fundamentos01.exceptions.base.ApplicationException;
+import ec.edu.ups.icc.fundamentos01.exceptions.response.ErrorResponse;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // ============== EXCEPCIONES DE NEGOCIO ==============
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(
+            ApplicationException ex,
+            HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                ex.getStatus(),
+                ex.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity
+                .status(ex.getStatus())
+                .body(response);
+    }
+
+    // ============== EXCEPCIONES DE VALIDACIÓN ==============
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Datos de entrada inválidos",
+                request.getRequestURI(),
+                errors);
+
+        return ResponseEntity
+                .badRequest()
+                .body(response);
+    }
+
+    // ============== EXCEPCIONES DE SEGURIDAD ==============
+
+    /**
+     * Maneja AuthorizationDeniedException (Spring Security 6.x)
+     * Se lanza cuando un usuario autenticado no tiene los permisos necesarios
+     * 
+     * Contexto: Ocurre cuando @PreAuthorize evalúa a false
+     * Ejemplo: Usuario con ROLE_USER intenta acceder a endpoint con hasRole('ADMIN')
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
+            AuthorizationDeniedException ex,
+            HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.FORBIDDEN,
+                "No tienes permisos para acceder a este recurso",
+                request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
+
+    /**
+     * Maneja AccessDeniedException (Spring Security legacy)
+     * Fallback para versiones anteriores de Spring Security o casos específicos
+     * 
+     * Contexto: Excepción estándar de acceso denegado
+     * También se lanza desde código personalizado de validación de ownership
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException ex,
+            HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.FORBIDDEN,
+                "Acceso denegado. No tienes los permisos necesarios",
+                request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
+
+    /**
+     * Maneja AuthenticationException
+     * Se lanza cuando hay problemas con la autenticación
+     * 
+     * Contexto: Problemas con credenciales, tokens inválidos, sesión expirada
+     * Nota: JwtAuthenticationFilter ya maneja la mayoría de casos de tokens inválidos
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(
+            AuthenticationException ex,
+            HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Credenciales inválidas o sesión expirada",
+                request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
+    // ============== EXCEPCIONES GENERALES ==============
+
+    /**
+     * Maneja cualquier excepción no capturada por otros manejadores
+     * Debe ser el último manejador (más genérico)
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(
+            Exception ex,
+            HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Error interno del servidor",
+                request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
+}

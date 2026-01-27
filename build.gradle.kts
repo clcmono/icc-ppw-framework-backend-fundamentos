@@ -44,6 +44,7 @@ dependencies {
 	// NECESARIO: ErrorResponse usa LocalDateTime que requiere este módulo
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	
+	
 	// Tests de seguridad
 	testImplementation("org.springframework.security:spring-security-test")
 }
