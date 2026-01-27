@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 
 import ec.edu.ups.icc.fundamentos01.products.dtos.CreateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
@@ -148,25 +150,24 @@ public class ProductController {
 
     // ============== ENDPOINTS DE MODIFICACIÓN ==============
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> update(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateProductDto dto,
-            @AuthenticationPrincipal UserDetailsImpl currentUser) {  // ← Usuario del JWT
-        
-        ProductResponseDto updated = productService.update(id, dto, currentUser);
-        return ResponseEntity.ok(updated);
-    }
+   @PutMapping("/{id}")
+public ResponseEntity<ProductResponseDto> update(
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateProductDto dto,
+        @AuthenticationPrincipal UserDetailsImpl currentUser) {
 
-   
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetailsImpl currentUser) {  // ← Usuario del JWT
-        
-        productService.delete(id, currentUser);
-        return ResponseEntity.noContent().build();
-    }
+    ProductResponseDto updated = productService.update(id, dto, currentUser);
+    return ResponseEntity.ok(updated);
+}
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> delete(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl currentUser) {
+
+    productService.delete(id, currentUser);
+    return ResponseEntity.noContent().build();
+}
 
 
 }

@@ -141,37 +141,38 @@ public class ProductServiceImpl implements ProductService {
     // ===================== UPDATE / DELETE CON OWNERSHIP =====================
 
     @Override
-    @Transactional
-    public ProductResponseDto update(Long id, UpdateProductDto dto, UserDetailsImpl currentUser) {
+@Transactional
+public ProductResponseDto update(Long id, UpdateProductDto dto, UserDetailsImpl currentUser) {
 
-        ProductEntity product = productRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Producto no encontrado con ID: " + id));
+    ProductEntity product = productRepo.findById(id)
+            .orElseThrow(() -> new NotFoundException("Producto no encontrado con ID: " + id));
 
-        validateOwnership(product, currentUser);
+    validateOwnership(product, currentUser);
 
-        Set<CategoryEntity> categories = validateAndGetCategories(dto.categoryIds);
+    Set<CategoryEntity> categories = validateAndGetCategories(dto.categoryIds);
 
-        Product domain = Product.fromEntity(product);
-        domain.update(dto);
+    Product domain = Product.fromEntity(product);
+    domain.update(dto);
 
-        ProductEntity updated = domain.toEntity(product.getOwner(), categories);
-        updated.setId(id);
+    ProductEntity updated = domain.toEntity(product.getOwner(), categories);
+    updated.setId(id);
 
-        ProductEntity saved = productRepo.save(updated);
-        return toResponseDto(saved);
-    }
+    ProductEntity saved = productRepo.save(updated);
+    return toResponseDto(saved);
+}
 
-    @Override
-    @Transactional
-    public void delete(Long id, UserDetailsImpl currentUser) {
+@Override
+@Transactional
+public void delete(Long id, UserDetailsImpl currentUser) {
 
-        ProductEntity product = productRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Producto no encontrado con ID: " + id));
+    ProductEntity product = productRepo.findById(id)
+            .orElseThrow(() -> new NotFoundException("Producto no encontrado con ID: " + id));
 
-        validateOwnership(product, currentUser);
+    validateOwnership(product, currentUser);
 
-        productRepo.delete(product);
-    }
+    productRepo.delete(product);
+}
+
 
     // ===================== PAGINACIÓN =====================
 
@@ -223,7 +224,7 @@ public class ProductServiceImpl implements ProductService {
         return productPage.map(this::toResponseDto);
     }
 
-    // ===================== OWNERSHIP =====================
+   
 
     private void validateOwnership(ProductEntity product, UserDetailsImpl currentUser) {
 
@@ -350,4 +351,9 @@ public class ProductServiceImpl implements ProductService {
 
         return dto;
     }
+  
+    
+
+
+
 }

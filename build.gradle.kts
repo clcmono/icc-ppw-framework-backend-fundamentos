@@ -27,6 +27,7 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	
+	
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -43,7 +44,7 @@ dependencies {
 	// Jackson para manejo de fechas Java 8+ (LocalDateTime, LocalDate, etc.)
 	// NECESARIO: ErrorResponse usa LocalDateTime que requiere este módulo
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-	
+
 	
 	// Tests de seguridad
 	testImplementation("org.springframework.security:spring-security-test")

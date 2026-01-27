@@ -30,10 +30,10 @@ public interface ProductService {
 
     void delete(Long id);
 
-    
     ProductResponseDto update(Long id, UpdateProductDto dto, UserDetailsImpl currentUser);
 
-    void delete(Long id, UserDetailsImpl currentUser);
+        void delete(Long id, UserDetailsImpl currentUser);
+
 
 
 

@@ -1,6 +1,5 @@
 package ec.edu.ups.icc.fundamentos01.security.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,15 +22,17 @@ import ec.edu.ups.icc.fundamentos01.security.services.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-
 public class SecurityConfig {
-     private final UserDetailsServiceImpl userDetailsService;
+
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService,
-                          JwtAuthenticationEntryPoint unauthorizedHandler,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(
+            UserDetailsServiceImpl userDetailsService,
+            JwtAuthenticationEntryPoint unauthorizedHandler,
+            JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -42,58 +43,56 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * DaoAuthenticationProvider: Proveedor de autenticación que conecta:
-     * - UserDetailsService: Carga información del usuario desde BD
-     * - PasswordEncoder: Valida la contraseña hasheada
-     * 
-     * Spring Security usa este provider para autenticar credenciales.
-     * El constructor acepta directamente el UserDetailsService en Spring Boot 3.x/4.x
-     */
+   
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider authProvider =
+                new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authConfig
+    ) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-            // Deshabilitar CSRF (no necesario para APIs REST con JWT)
+          
             .csrf(AbstractHttpConfigurer::disable)
 
-            // Configurar manejo de excepciones de autenticación
-            .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(unauthorizedHandler)
+         
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(unauthorizedHandler)
             )
 
-            // Configurar sesiones como stateless (no usar sesiones HTTP)
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+         
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-
-            // Configurar autorización de requests
             .authorizeHttpRequests(auth -> auth
-                // Endpoints públicos (sin autenticación)
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/status/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                
-                // Todos los demás endpoints requieren autenticación
+
+              
                 .anyRequest().authenticated()
             );
 
-        // Agregar proveedor de autenticación
+
         http.authenticationProvider(authenticationProvider());
 
-        // Agregar filtro JWT antes del filtro de autenticación estándar
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+ 
+        http.addFilterBefore(
+            jwtAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
 
         return http.build();
     }
