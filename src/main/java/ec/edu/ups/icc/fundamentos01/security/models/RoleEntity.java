@@ -1,10 +1,17 @@
 package ec.edu.ups.icc.fundamentos01.security.models;
 
-import ec.edu.ups.icc.fundamentos01.core.entities.BaseModel; // Corrige esto según tu paquete real
-import ec.edu.ups.icc.fundamentos01.users.models.UserEntity;
-import jakarta.persistence.*;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+
+import ec.edu.ups.icc.fundamentos01.core.entities.BaseModel;
+import ec.edu.ups.icc.fundamentos01.users.models.UserEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
